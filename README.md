@@ -20,7 +20,12 @@ pip install -r requirements.txt
 
 start a venv and launch the program
 ```bash
-python main.py
+python main.py [TWEET_URL_HERE]
+```
+
+Example
+```bash
+python main.py "https://twitter.com/CaroleDanwe/status/1413537284029308930"
 ```
 
 ## Features
