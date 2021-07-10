@@ -1,10 +1,17 @@
 import requests
+import argparse
 import csv
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-no_quote_url = 'https://twitter.com/gabriel_TheCode/status/1413841963569328132'
-tweet_url = 'https://twitter.com/CaroleDanwe/status/1413537284029308930'
+
+parser = argparse.ArgumentParser(description='Build a db from tweets')
+parser.add_argument('url', metavar='U', type=str, nargs='+',
+                    help='The URL of tweet from where to start exploring')
+
+args = parser.parse_args()
+
+
 GOOGLE_BOT_UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 BROWSER_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 headers = {'User-Agent': GOOGLE_BOT_UA}
@@ -69,19 +76,33 @@ def save_tweets(tweets: list[dict]):
     return True
 
 
-def get_quoted_tweet(tweet_content):
+def tweet_has_pattern(tweet):
+    return True
+
+def get_quoted_tweet(tweet_url):
     """
     Will use search to get quoted tweets....
     - search a tweet url
     - all result containing that URL are the Quoted one
     """
-    pass
+    search_url = 'https://twitter.com/search?q=https%3A%2F%2Ftwitter.com%2FCaroleDanwe%2Fstatus%2F1413537284029308930&src=typed_query'
+    response = requests.get(search_url, headers=headers)
+    if response.ok:
+        # f = open('webpage_{}.html'.format(datetime.now()), 'w+')
+        # f.write(response.text)
+        # f.close()
+        soup = BeautifulSoup(response.text, "html.parser")
+        for tweet in soup.find_all('div', class_='tweet'):
+            if tweet_has_pattern(tweet):
+                get_tweet_content()
+    
 
 
 def get_tweet_content(url: str):
     
     response = requests.get(url, headers=headers)
     if response.ok:
+        get_quoted_tweet(url)
         soup = BeautifulSoup(response.text, "html.parser")
         content_soup = soup.find('p', class_='TweetTextSize TweetTextSize--jumbo js-tweet-text tweet-text')
         
@@ -95,14 +116,14 @@ def get_tweet_content(url: str):
         visited_tweets.append(url)
         if quote_tweet_soup is not None:
             next_url = quote_tweet_soup.get('data-expanded-url')
-            get_tweet_content(next_url)
-        
-
+            # get_tweet_content(next_url)
     else:
         print('an issue')
         quit(1)
 
-get_tweet_content(url=tweet_url)
-# print(csv_headers, ' headers \n ', len(tweet_data) )
+
+
+url = args.url[0]
+get_tweet_content(url)
 save_tweets(tweet_data)
 print("Visited {} links".format(len(visited_tweets)))
