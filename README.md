@@ -13,13 +13,17 @@ Clone this repo
 git clone https://github.com/simo97/Loki
 ```
 
-install requirment
+install requirements
 ```bash
 pip install -r requirements.txt
 ```
 
 start a venv and launch the program
-
 ```bash
-python tweet_scrapper.py
+python main.py
 ```
+
+## Features
+
+- extract data to one shift according to the data we are looking for
+- Search for quoted tweet
