@@ -26,4 +26,6 @@ python main.py
 ## Features
 
 - extract data to one shift according to the data we are looking for
-- Search for quoted tweet
+
+## Work In Progress
+- Search for quoted tweet for indexing
